@@ -7,14 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import model.NavItem;
 import rs.reviewer.R;
-
 import java.util.ArrayList;
 
 public class DrawerListAdapter extends BaseAdapter {
-	 
     Context mContext;
     ArrayList<NavItem> mNavItems;
  

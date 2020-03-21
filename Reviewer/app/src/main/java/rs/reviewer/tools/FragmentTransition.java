@@ -1,13 +1,12 @@
 package rs.reviewer.tools;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import rs.reviewer.R;
 
-public class FragmentTransition
-{
+public class FragmentTransition {
+
 	public static void to(Fragment newFragment, FragmentActivity activity)
 	{
 		to(newFragment, activity, true);
