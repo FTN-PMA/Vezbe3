@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import rs.reviewer.R;
@@ -15,15 +16,17 @@ import rs.reviewer.R;
 public class RelativeLayoutFragment extends Fragment {
 
     public static RelativeLayoutFragment newInstance() {
-
-        RelativeLayoutFragment mpf = new RelativeLayoutFragment();
-
-        return mpf;
+        return new RelativeLayoutFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.relative_layout, container, false);
+        View view = inflater.inflate(R.layout.relative_layout, container, false);
+
+        TextView textView = view.findViewById(R.id.relativeTitle);
+        textView.setText(R.string.relativelayout);
+
+        return view;
     }
 
     @Override

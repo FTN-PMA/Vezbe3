@@ -16,94 +16,48 @@
 
 package rs.reviewer;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import model.NavItem;
-import rs.reviewer.adapters.DrawerListAdapter;
 import rs.reviewer.fragments.LinearLayoutFragment;
 import rs.reviewer.fragments.RelativeLayoutFragment;
 import rs.reviewer.tools.FragmentTransition;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private RelativeLayout mDrawerPane;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    private ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
-	
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        prepareMenu(mNavItems);
-        
-        mTitle = mDrawerTitle = getTitle();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mDrawerList = (ListView) findViewById(R.id.navList);
-        
-        // Populate the Navigtion Drawer with options
-        mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
-        DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
-        
-        // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerList.setAdapter(adapter);
 
-        // enable ActionBar app icon to behave as action to toggle nav drawer
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
+        /*
+        * Da bi pronasli odredjenu komponentu na layout-u,
+        * prvo moram da je jedinstveno identifikujemo koristeci android:id atribut.
+        * Kada smo je jedinstveno identifikovali, ako zelimo da sa njom nesto
+        * radimo u javi, moramo da je dobavimo unutar nase klase. Za te potrebe
+        * koristimo metodu findViewById, koja ce nam vratiti tacnu komponentu
+        * po jedinstvenom identifikatoru u tom layout-u.
+        * Kada dobijemo referencu, dalje mozemo da radimo sa tom komponenom sta zelimo.
+        * */
+        TextView textView = findViewById(R.id.layoutTitle);
 
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setIcon(R.drawable.ic_launcher);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
-            actionBar.setHomeButtonEnabled(true);
-        }
+        /*
+        * Ako zelimo da iskoristimo neki od resursa iz naseg projekta
+        * to mozemo da uraidmo koristeci dot sintaksu. Android
+        * Odrzava poseban file koji se zove R file, i on se generise
+        * svaki put kada se projekat izmeni. On cuva reference do svakog
+        * resursa unutar projekta.
+        *
+        * NPR: R.string.mainActivityTitle znaci da unutar naseg res foldera
+        * postoji folder koji se zove strings i da unutar njega postoji resurs
+        * string koji ima name mainActivityTitle. Na ovaj nacin,
+        * ispravno smo se pozicionirali na resurs unutar projekta
+        * */
+        textView.setText(R.string.mainActivityTitle);
 
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                toolbar,
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-        ) {
-            public void onDrawerClosed(View view) {
-//                getActionBar().setTitle(mTitle);
-                getSupportActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerOpened(View drawerView) {
-//                getActionBar().setTitle(mDrawerTitle);
-                getSupportActionBar().setTitle("iReviewer");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-//        mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        if (savedInstanceState == null) {
-            selectItemFromDrawer(0);
-        }
-        
+        // U ovim fragmentima mozemo da vidimo da koristeci bilo koji od ova dva layout-a, mozemo da napravimo isti izgled.
+        FragmentTransition.to(RelativeLayoutFragment.newInstance(), this, false, R.id.upView);
+        FragmentTransition.to(LinearLayoutFragment.newInstance(), this, false, R.id.downView);
     }
     
     @Override
@@ -112,83 +66,8 @@ public class MainActivity extends AppCompatActivity {
     	super.onResume();
     }
     
-    private void prepareMenu(ArrayList<NavItem> mNavItems ){
-    	mNavItems.add(new NavItem(getString(R.string.home), getString(R.string.home_long), R.drawable.ic_action_map));
-        mNavItems.add(new NavItem(getString(R.string.places), getString(R.string.places_long), R.drawable.ic_action_place));
-        mNavItems.add(new NavItem(getString(R.string.preferences), getString(R.string.preferences_long), R.drawable.ic_action_settings));
-        mNavItems.add(new NavItem(getString(R.string.about), getString(R.string.about_long), R.drawable.ic_action_about));
-        mNavItems.add(new NavItem(getString(R.string.sync_data), getString(R.string.sync_data_long), R.drawable.ic_action_refresh));
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-         // The action bar home/up action should open or close the drawer.
-         // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /* The click listner for ListView in the navigation drawer */
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	selectItemFromDrawer(position);
-        }
-    }
-
-    private void selectItemFromDrawer(int position) {
-        switch (position) {
-            case 0:
-                FragmentTransition.to(LinearLayoutFragment.newInstance(), this, false);
-                break;
-            default:
-                FragmentTransition.to(RelativeLayoutFragment.newInstance(), this, false);
-                break;
-        }
-        
-        mDrawerList.setItemChecked(position, true);
-        if(position != 5) // za sve osim za sync
-        {
-        	setTitle(mNavItems.get(position).getmTitle());
-            /*getSupportActionBar().setTitle(mNavItems.get(position).getmTitle());
-            mTitle = ;*/
-        }
-        mDrawerLayout.closeDrawer(mDrawerPane);
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
-    }
-    
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-    
     @Override
     protected void onPause() {
     	super.onPause();
-    	
     }
 }
